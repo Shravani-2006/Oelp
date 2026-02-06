@@ -1,0 +1,35 @@
+annotation_task_name: "hindi_alignment"
+task_dir: "."
+output_annotation_dir: "annotation_output/"
+data_files:
+  - "data.jsonl"
+
+item_properties:
+  id_key: "id"
+  text_key: "hindi_text"
+
+# Use the 'instance_display' section for modern POTATO versions to ensure visibility
+instance_display:
+  fields:
+    - key: "hindi_text"
+      label: "Hindi Sentence"
+      type: "text"
+
+# The html_layout is used as a fallback or for custom styling
+html_layout: |
+  <div style="padding: 20px; font-family: 'Arial Unicode MS', sans-serif;">
+    <h3 style="color: #666;">Hindi Sentence:</h3>
+    <div style="font-size: 2em; background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; line-height: 1.5;">
+      {{hindi_text}}
+    </div>
+  </div>
+
+annotation_schemes:
+  - annotation_type: "radio"
+    name: "alignment_choice"
+    description: "Choose the correct English alignment:"
+    labels:
+      - "This is a good phone."
+      - "The phone is expensive."
+      - "I like this device."
+      - "No correct alignment"
