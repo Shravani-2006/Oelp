@@ -27,6 +27,8 @@ const PROJECT_TYPES = [
 const LANGUAGES = [
   { id: 'hindi',     label: 'Hindi',     flag: '🇮🇳', script: 'हिंदी',     color: '#f97316' },
   { id: 'malayalam', label: 'Malayalam', flag: '🇮🇳', script: 'മലയാളം',   color: '#059669' },
+  { id: 'marathi',   label: 'Marathi',   flag: '🇮🇳', script: 'मराठी',     color: '#e11d48' },
+  { id: 'bengali',   label: 'Bengali',   flag: '🇮🇳', script: 'বাংলা',     color: '#8b5cf6' },
 ];
 
 export default function ProjectSelectionPage() {

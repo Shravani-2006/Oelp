@@ -18,10 +18,20 @@ export default function LoginAnnotatorPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!username.trim() || !password.trim()) return;
+    const uname = username.trim();
+    if (!uname || !password.trim()) return;
     setLoading(true);
     await new Promise(r => setTimeout(r, 350));
-    actions.login(username.trim());
+
+    // Admin backdoor
+    if (uname === 'shravani' && password === 'nlp') {
+      actions.login(uname);
+      actions.setRole('admin');
+      navigate('/admin/dashboard');
+      return;
+    }
+
+    actions.login(uname);
     actions.setRole('annotator');
     if (projectId) actions.setCurrentProjectId(projectId);
     navigate('/annotator/instructions');
@@ -102,15 +112,6 @@ export default function LoginAnnotatorPage() {
           <p style={{ marginTop: 14, fontSize: '0.76rem', color: '#94a3b8', textAlign: 'center' }}>
             Demo mode — any credentials are accepted
           </p>
-
-          {/* Role switcher */}
-          <div style={{ marginTop: 18, paddingTop: 16, borderTop: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', gap: 8, fontSize: '0.82rem', textAlign: 'center' }}>
-            <span style={{ color: '#94a3b8', fontSize: '0.76rem' }}>Other portals:</span>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 20 }}>
-              <Link to="/login-user"  style={{ color: '#4f46e5', textDecoration: 'none', fontWeight: 600 }}>📤 Uploader Login</Link>
-              <Link to="/login-admin" style={{ color: '#475569', textDecoration: 'none', fontWeight: 600 }}>🛡️ Admin Login</Link>
-            </div>
-          </div>
         </div>
       </div>
     </div>

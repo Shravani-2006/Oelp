@@ -17,21 +17,21 @@ export function normalizeRecord(obj, idx) {
 
   // sentences
   r.english = r.english ?? r.en_sentence ?? '';
-  r.target  = r.target  ?? r.hindi ?? r.ml_sentence ?? r.malayalam ?? '';
+  r.target  = r.target  ?? r.hindi ?? r.marathi ?? r.bengali ?? r.ml_sentence ?? r.mr_sentence ?? r.bn_sentence ?? r.malayalam ?? '';
 
   // tokens – auto-split if not provided
   r.english_tokens = r.english_tokens ?? r.english.trim().split(/\s+/).filter(Boolean);
-  r.target_tokens  = r.target_tokens  ?? r.hindi_tokens ?? r.ml_tokens
+  r.target_tokens  = r.target_tokens  ?? r.hindi_tokens ?? r.marathi_tokens ?? r.bengali_tokens ?? r.ml_tokens ?? r.mr_tokens ?? r.bn_tokens
                      ?? r.target.trim().split(/\s+/).filter(Boolean);
 
   // alignment – normalise to { en_word, ml_word } regardless of source format
   if (Array.isArray(r.alignment)) {
     r.alignment = r.alignment.map(a => {
-      if (a.en_word !== undefined) return { en_word: a.en_word, ml_word: a.ml_word };
+      if (a.en_word !== undefined) return { ...a };
       // old format: { en: [idx], hi: [idx] }
       if (Array.isArray(a.en)) {
         const enW = (r.english_tokens[a.en[0]] ?? '');
-        const hiW = (r.target_tokens[ a.hi?.[0] ] ?? '');
+        const hiW = (r.target_tokens[ a.hi?.[0] ?? a.mr?.[0] ?? a.bn?.[0] ?? a.ml?.[0] ] ?? '');
         return { en_word: enW, ml_word: hiW };
       }
       return { en_word: '', ml_word: '' };
@@ -46,7 +46,8 @@ export function normalizeRecord(obj, idx) {
 /** Find ALL token indices (0-based) where the token text matches `word` */
 export function findTokenIndices(tokens, word) {
   if (!word) return [];
-  const clean = w => w.replace(/^["""'''()\[\]{},;:!?.]+|["""'''()\[\]{},;:!?.]+$/g, '').toLowerCase();
+  // Include standard punctuation and Indic Danda (।) and Double Danda (॥)
+  const clean = w => w.replace(/^["""'''()\[\]{},;:!?.।॥]+/g, '').replace(/["""'''()\[\]{},;:!?.।॥]+$/g, '').toLowerCase();
   const cw = clean(word);
   const results = [];
   tokens.forEach((tok, i) => {

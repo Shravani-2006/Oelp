@@ -3,8 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 // Hardcoded admin credentials (demo)
-const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = 'admin123';
+const ADMIN_USERNAME = 'shravani';
+const ADMIN_PASSWORD = 'nlp';
 
 export default function LoginAdminPage() {
   const { state, actions } = useApp();
@@ -106,9 +106,9 @@ export default function LoginAdminPage() {
           </form>
 
           <p style={{ marginTop: 14, fontSize: '0.76rem', color: '#94a3b8', textAlign: 'center' }}>
-            Credentials: <code style={{ background: '#f1f5f9', padding: '1px 6px', borderRadius: 4 }}>admin</code>
+            Credentials: <code style={{ background: '#f1f5f9', padding: '1px 6px', borderRadius: 4 }}>shravani</code>
             {' / '}
-            <code style={{ background: '#f1f5f9', padding: '1px 6px', borderRadius: 4 }}>admin123</code>
+            <code style={{ background: '#f1f5f9', padding: '1px 6px', borderRadius: 4 }}>nlp</code>
           </p>
 
           <div style={{ marginTop: 18, paddingTop: 16, borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'center', gap: 20, fontSize: '0.82rem' }}>

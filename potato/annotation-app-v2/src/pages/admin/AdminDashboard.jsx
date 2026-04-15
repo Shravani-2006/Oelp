@@ -5,7 +5,7 @@ import Navbar from '../../components/Navbar';
 const STATUS_STYLE = {
   uploaded:      { bg: '#dbeafe', color: '#1e40af', label: 'Uploaded' },
   'in-progress': { bg: '#fef3c7', color: '#92400e', label: 'In Progress' },
-  completed:     { bg: '#d1fae5', color: '#065f46', label: 'Completed' },
+  completed:     { bg: '#d1fae5', color: '#065f46', label: 'Done' },
 };
 
 const TABS = [
@@ -176,12 +176,21 @@ export default function AdminDashboard() {
                               }}>{badge.label}</span>
                             </td>
                             <td style={{ padding: '10px 14px' }}>
-                              {p.annotationResult
-                                ? <button className="btn btn-sm btn-success"
-                                    onClick={() => downloadJSON(p.annotationResult, `annotations_${p.id.slice(-8)}.json`)}>
-                                    ⬇️ Results
+                              {p.annotationResults ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                  {p.annotationResults.map((sub, idx) => (
+                                    <button key={idx} className="btn btn-sm btn-success"
+                                      onClick={() => downloadJSON(sub.result, `annotated_${p.id.slice(-8)}_${sub.annotatedBy}.json`)}>
+                                      ⬇️ {sub.annotatedBy}
+                                    </button>
+                                  ))}
+                                </div>
+                              ) : p.annotationResult ? (
+                                  <button className="btn btn-sm btn-success"
+                                    onClick={() => downloadJSON(p.annotationResult, `annotated_${p.id.slice(-8)}.json`)}>
+                                    ⬇️ Download
                                   </button>
-                                : <span style={{ color: '#94a3b8', fontSize: '0.78rem' }}>Pending</span>
+                              ) : <span style={{ color: '#94a3b8', fontSize: '0.78rem' }}>Pending</span>
                               }
                             </td>
                           </tr>

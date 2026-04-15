@@ -48,7 +48,7 @@ export default function ConfigurePage() {
           </div>
 
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-            <button className="btn btn-secondary" onClick={() => navigate('/role-select')}>Back to Home</button>
+            <button className="btn btn-secondary" onClick={() => navigate('/user/dashboard')}>Back to Home</button>
             <button className="btn btn-success btn-lg" onClick={() => navigate('/user/dashboard')}>📊 Go to Dashboard →</button>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default function ConfigurePage() {
           </div>
           <div className="card-body">
             <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 10, padding: 14, marginBottom: 20, display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-              {[['Sentences', total], ['Purpose', state.purpose === 'evaluate' ? 'Model Evaluation' : 'Ground Truth'], ['Language', 'EN ↔ ML']].map(([l, v]) => (
+              {[['Sentences', total], ['Purpose', state.purpose === 'evaluate' ? 'Model Evaluation' : 'Ground Truth'], ['Language', `EN ↔ ${state.language ? state.language.toUpperCase().substring(0,2) : 'ML'}`]].map(([l, v]) => (
                 <div key={l}><div style={{ fontSize: '0.75rem', color: '#64748b' }}>{l}</div><div style={{ fontWeight: 700 }}>{v}</div></div>
               ))}
             </div>

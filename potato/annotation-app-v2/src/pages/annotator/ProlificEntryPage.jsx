@@ -43,7 +43,7 @@ export default function ProlificEntryPage() {
 
     const timer = setTimeout(() => navigate('/annotator/instructions'), 1400);
     return () => clearTimeout(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line
   }, []);
 
   return (

@@ -108,14 +108,12 @@ export default function AnnotatorInstructionsPage() {
 
             {!hasData && !error && (
               <div className="alert alert-warning">
-                ⚠️ No dataset loaded. Ask an Uploader to activate a task first, or{' '}
-                <button style={{ background: 'none', border: 'none', color: '#92400e', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}
-                  onClick={() => navigate('/user/instructions')}>upload one yourself</button>.
+                ⚠️ No dataset loaded. Please use the specific project link provided to you to access your assignment. 
               </div>
             )}
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
-              <button className="btn btn-secondary" onClick={() => navigate('/role-select')}>← Change Role</button>
+              <button className="btn btn-secondary" onClick={() => { actions.logout(); navigate('/login-annotator'); }}>← Back to Login</button>
               <button className="btn btn-success btn-lg" onClick={() => navigate('/annotator/annotate')} disabled={!canContinue}>
                 🖊️ Start Annotating →
               </button>

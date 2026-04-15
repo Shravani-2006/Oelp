@@ -7,29 +7,35 @@ export default function DonePage() {
   const { state, actions, helpers } = useApp();
   const navigate = useNavigate();
 
-  // On mount: mark project completed and store annotation results (improvement #2 & #3)
+  // On mount: mark project completed and store annotation results
   useEffect(() => {
     const projectId = state.currentProjectId;
     if (projectId) {
       const output = helpers.buildFinalOutput();
+      const proj = (state.projects || []).find(p => p.id === projectId);
+      
+      const newSubmission = {
+        annotatedBy: state.username,
+        annotatedAt: new Date().toISOString(),
+        result: output
+      };
+
+      const existingResults = proj?.annotationResults || [];
+      const updatedResults = [...existingResults, newSubmission];
+
+      // Keep annotationResult as a fallback to safely support old views, but write the new array
       actions.updateProject(projectId, {
-        status: 'completed',           // improvement #2: status → completed
-        annotationResult: output,      // improvement #3: save results to project
+        status: 'completed',
+        annotationResults: updatedResults,
+        annotationResult: updatedResults, 
         annotatedBy: state.username,
         annotatedAt: new Date().toISOString(),
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line
   }, []);
 
-  const reDownload = () => {
-    const output = helpers.buildFinalOutput();
-    const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url; a.download = `annotations_${state.username}_${Date.now()}.json`; a.click();
-    URL.revokeObjectURL(url);
-  };
+  const reDownload = () => {};
 
   // improvement #4: return to Prolific using completionCode from state
   const returnToProlific = () => {
@@ -95,9 +101,8 @@ export default function DonePage() {
 
           {/* Standard action buttons */}
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button className="btn btn-secondary" onClick={reDownload}>⬇️ Download Again</button>
             <button className="btn btn-primary"   onClick={() => { actions.reset(); navigate('/annotator/annotate'); }}>🔄 Annotate Again</button>
-            <button className="btn btn-outline"   onClick={() => navigate('/role-select')}>🏠 Home</button>
+            <button className="btn btn-outline"   onClick={() => { actions.logout(); navigate('/login-annotator'); }}>🏠 Home</button>
           </div>
 
         </div>

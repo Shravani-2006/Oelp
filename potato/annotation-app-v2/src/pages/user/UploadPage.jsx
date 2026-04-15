@@ -20,7 +20,7 @@ function validateRecords(records) {
 }
 
 export default function UploadPage() {
-  const { actions } = useApp();
+  const { state, actions } = useApp();
   const navigate    = useNavigate();
   const fileRef     = useRef(null);
 
@@ -142,7 +142,7 @@ export default function UploadPage() {
                       <p style={{ fontSize: '0.88rem', marginTop: 2 }}>{rec.english}</p>
                     </div>
                     <div style={{ marginBottom: 8 }}>
-                      <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#059669', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Malayalam / Target</span>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#059669', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{state.language || 'Malayalam'} / Target</span>
                       <p className="ml" style={{ fontSize: '0.93rem', marginTop: 2 }}>{rec.target}</p>
                     </div>
                     <div>

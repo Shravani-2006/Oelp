@@ -18,10 +18,30 @@ const SAMPLES = {
   "id": 1,
   "english": "I love apples",
   "target": "मुझे सेब पसंद हैं",
-  "alignment": [{ "en_word": "apples", "ml_word": "सेब" }]
+  "alignment": [{ "en_word": "apples", "hi_word": "सेब" }]
 }]`,
-    jsonl: `{"en_sentence":"The cat sat","hi_sentence":"बिल्ली बैठी थी","alignment":[{"en_word":"cat","ml_word":"बिल्ली"}]}`,
+    jsonl: `{"en_sentence":"The cat sat","hi_sentence":"बिल्ली बैठी थी","alignment":[{"en_word":"cat","hi_word":"बिल्ली"}]}`,
     langName: 'Hindi'
+  },
+  marathi: {
+    json: `[{
+  "id": 1,
+  "english": "I love apples",
+  "target": "मला सफरचंद आवडतात",
+  "alignment": [{ "en_word": "apples", "mr_word": "सफरचंद" }]
+}]`,
+    jsonl: `{"en_sentence":"The cat sat","mr_sentence":"मांजर बसली","alignment":[{"en_word":"cat","mr_word":"मांजर"}]}`,
+    langName: 'Marathi'
+  },
+  bengali: {
+    json: `[{
+  "id": 1,
+  "english": "I love apples",
+  "target": "আমি আপেল ভালোবাসি",
+  "alignment": [{ "en_word": "apples", "bn_word": "আপেল" }]
+}]`,
+    jsonl: `{"en_sentence":"The cat sat","bn_sentence":"বিড়াল বসেছিল","alignment":[{"en_word":"cat","bn_word":"বিড়াল"}]}`,
+    langName: 'Bengali'
   }
 };
 
@@ -64,7 +84,7 @@ export default function UserInstructionsPage() {
             <section style={{ marginBottom: 24 }}>
               <h3 style={{ fontWeight: 700, color: '#4f46e5', marginBottom: 8 }}>🎯 What this tool does</h3>
               <p style={{ color: '#475569', lineHeight: 1.75, fontSize: '0.91rem' }}>
-                Upload a bilingual dataset of English–Malayalam (or English–Hindi) sentence pairs.
+                Upload a bilingual dataset of English–{sampleData.langName} sentence pairs.
                 Each sentence already has word alignment pairs. Annotators will verify whether each
                 alignment is correct and correct it if not.
               </p>
