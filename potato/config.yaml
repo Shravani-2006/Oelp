@@ -1,4 +1,4 @@
-annotation_task_name: "HINDI_FINAL_FIX_V8" # Incremented version to clear database cache
+annotation_task_name: "HINDI_FINAL_FIX_V7" # Reverting to V7 as requested by user
 task_dir: "."
 output_annotation_dir: "annotation_output/"
 layout_id: "layout_html"
