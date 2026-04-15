@@ -4,7 +4,11 @@ import { useApp } from '../../context/AppContext';
 import { findTokenIndices } from '../../context/AppContext';
 import Navbar from '../../components/Navbar';
 import { ReactTransliterate } from 'react-transliterate';
+<<<<<<< HEAD
 
+=======
+import 'react-transliterate/dist/index.css';
+>>>>>>> 74eda9f (some changes)
 // ── helpers ────────────────────────────────────────────────────────────────────
 function downloadJSON(data, name) {
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -56,17 +60,27 @@ function SentencePanel({ sentence, hoveredPairIdx, answers }) {
             <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#4f46e5', display: 'inline-block' }}></span>
             English
           </div>
+<<<<<<< HEAD
           <div className={isHovering ? 'tokens-dimmed' : ''} style={{ lineHeight: 1.6, flexWrap: 'wrap', display: 'flex', gap: 2, fontSize: '0.86rem' }}>
+=======
+          <div className={isHovering ? 'tokens-dimmed' : ''} style={{ lineHeight: 2.2, fontSize: '1.05rem', color: '#1e293b' }}>
+>>>>>>> 74eda9f (some changes)
             {enTokens.map((tok, i) => {
               const isHl = hlEnIdx.includes(i);
               const isAns = answeredEnIdx.has(i) && !isHl;
               return (
-                <span key={i}
-                  className={`token token-en${isHl ? ' hl-hover' : isAns ? ' hl-answered' : ''}`}
-                  title={`index ${i}`}
-                >
-                  {tok}<sup className="token-index">{i}</sup>
-                </span>
+                <React.Fragment key={i}>
+                  <span
+                    className={`token ${isHl ? 'token-en hl-hover' : isAns ? 'token-en hl-answered' : ''}`}
+                    title={`index ${i}`}
+                    style={(!isHl && !isAns) ? { 
+                      display: 'inline', padding: 0, margin: 0, background: 'transparent', border: 'none', color: 'inherit' 
+                    } : undefined}
+                  >
+                    {tok}
+                  </span>
+                  {' '}
+                </React.Fragment>
               );
             })}
           </div>
@@ -78,17 +92,27 @@ function SentencePanel({ sentence, hoveredPairIdx, answers }) {
             <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#059669', display: 'inline-block' }}></span>
             {state.language === 'hindi' ? 'Hindi' : 'Malayalam'} / Target
           </div>
+<<<<<<< HEAD
           <div className={isHovering ? 'tokens-dimmed' : ''} style={{ lineHeight: 1.6, flexWrap: 'wrap', display: 'flex', gap: 2, fontSize: '0.86rem' }}>
+=======
+          <div className={isHovering ? 'tokens-dimmed' : ''} style={{ lineHeight: 2.2, fontSize: '1.05rem', color: '#1e293b' }}>
+>>>>>>> 74eda9f (some changes)
             {mlTokens.map((tok, i) => {
               const isHl = hlMlIdx.includes(i);
               const isAns = answeredMlIdx.has(i) && !isHl;
               return (
-                <span key={i}
-                  className={`token token-ml ml${isHl ? ' hl-hover' : isAns ? ' hl-answered' : ''}`}
-                  title={`index ${i}`}
-                >
-                  {tok}<sup className="token-index">{i}</sup>
-                </span>
+                <React.Fragment key={i}>
+                  <span
+                    className={`token ml ${isHl ? 'token-ml hl-hover' : isAns ? 'token-ml hl-answered' : ''}`}
+                    title={`index ${i}`}
+                    style={(!isHl && !isAns) ? { 
+                      display: 'inline', padding: 0, margin: 0, background: 'transparent', border: 'none', color: 'inherit' 
+                    } : undefined}
+                  >
+                    {tok}
+                  </span>
+                  {' '}
+                </React.Fragment>
               );
             })}
           </div>
@@ -115,13 +139,20 @@ function SentencePanel({ sentence, hoveredPairIdx, answers }) {
 }
 
 // ── AlignmentCard ──────────────────────────────────────────────────────────────
+<<<<<<< HEAD
 function AlignmentCard({ pair, pairIdx, answer, onAnswer, onHoverChange, isFocused, targetTokens, language }) {
   const [correctedWord, setCorrectedWord] = useState(answer?.correctedWord ?? '');
   const [subType, setSubType]           = useState(answer?.subType || 'manual'); // 'manual' or 'exists'
+=======
+function AlignmentCard({ pair, pairIdx, answer, onAnswer, onHoverChange, isFocused, mlTokens }) {
+  const [correctedWord, setCorrectedWord] = useState(answer?.correctedWord ?? '');
+  const [existsInSentence, setExistsInSentence] = useState(answer?.existsInSentence ?? null);
+>>>>>>> 74eda9f (some changes)
 
   // Sync corrected word into answer state when it changes
   useEffect(() => {
     if (answer?.answer === 'no') {
+<<<<<<< HEAD
       onAnswer(pairIdx, { 
         answer: 'no', 
         correctedWord: correctedWord.trim(),
@@ -130,15 +161,29 @@ function AlignmentCard({ pair, pairIdx, answer, onAnswer, onHoverChange, isFocus
     }
   // eslint-disable-next-line
   }, [correctedWord, subType]);
+=======
+      onAnswer(pairIdx, { answer: 'no', correctedWord: correctedWord.trim(), existsInSentence });
+    }
+  // eslint-disable-next-line
+  }, [correctedWord, existsInSentence]);
+>>>>>>> 74eda9f (some changes)
 
   // If answer changes from outside, sync local state
   useEffect(() => {
     setCorrectedWord(answer?.correctedWord ?? '');
+<<<<<<< HEAD
     setSubType(answer?.subType || 'manual');
   }, [answer?.answer]);
 
   const markYes = (e) => { e.stopPropagation(); onAnswer(pairIdx, { answer: 'yes' }); };
   const markNo  = (e) => { e.stopPropagation(); onAnswer(pairIdx, { answer: 'no', subType: 'manual', correctedWord: '' }); };
+=======
+    setExistsInSentence(answer?.existsInSentence ?? null);
+  }, [answer?.answer]);
+
+  const markYes = (e) => { e.stopPropagation(); setExistsInSentence(null); onAnswer(pairIdx, { answer: 'yes', correctedWord: '', existsInSentence: null }); };
+  const markNo  = (e) => { e.stopPropagation(); setExistsInSentence(null); onAnswer(pairIdx, { answer: 'no',  correctedWord: '', existsInSentence: null }); };
+>>>>>>> 74eda9f (some changes)
 
   const isYes = answer?.answer === 'yes';
   const isNo  = answer?.answer === 'no';
@@ -232,6 +277,7 @@ function AlignmentCard({ pair, pairIdx, answer, onAnswer, onHoverChange, isFocus
           background: '#fffbeb', border: '1px solid #fde68a',
           borderRadius: 8, padding: '10px 12px', marginTop: 8,
         }}>
+<<<<<<< HEAD
           <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
             <button 
               className={`btn btn-sm ${subType === 'exists' ? 'btn-primary' : 'btn-secondary'}`}
@@ -268,6 +314,77 @@ function AlignmentCard({ pair, pairIdx, answer, onAnswer, onHoverChange, isFocus
                 lang={language === 'hindi' ? 'hi' : 'ml'}
                 placeholder={`Type phonetically (e.g. namaskar)...`}
               />
+=======
+          {!existsInSentence && (
+            <div style={{ marginBottom: 10 }}>
+              <label style={{ fontSize: '0.86rem', fontWeight: 600, color: '#92400e', display: 'block', marginBottom: 6 }}>
+                Does the correct alignment exist in the target sentence?
+              </label>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button
+                  className={`btn btn-sm ${existsInSentence === 'yes' ? 'btn-primary' : 'btn-secondary'}`}
+                  style={existsInSentence !== 'yes' ? { background: '#fde68a', border: '1px solid #d97706', color: '#92400e' } : {}}
+                  onClick={() => { setExistsInSentence('yes'); setCorrectedWord(mlTokens[0] || ''); }}
+                >Yes</button>
+                <button
+                  className={`btn btn-sm ${existsInSentence === 'no' ? 'btn-primary' : 'btn-secondary'}`}
+                  style={existsInSentence !== 'no' ? { background: '#fde68a', border: '1px solid #d97706', color: '#92400e' } : {}}
+                  onClick={() => { setExistsInSentence('no'); setCorrectedWord(''); }}
+                >No</button>
+              </div>
+            </div>
+          )}
+
+          {existsInSentence === 'yes' && (
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <label style={{ fontSize: '0.82rem', fontWeight: 600, color: '#92400e', display: 'block', marginBottom: 6 }}>
+                  Select the correct word from the sentence:
+                </label>
+                <button onClick={() => setExistsInSentence(null)} style={{ border:'none', background:'transparent', color:'#d97706', cursor:'pointer', fontSize:'0.75rem', textDecoration:'underline' }}>Change choice</button>
+              </div>
+              <select
+                className="form-control ml"
+                value={correctedWord}
+                onChange={e => setCorrectedWord(e.target.value)}
+                style={{ fontSize: '1rem', borderColor: '#fde68a', background: 'white' }}
+              >
+                {mlTokens.map((tok, i) => (
+                  <option key={i} value={tok}>{tok}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {existsInSentence === 'no' && (
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <label style={{ fontSize: '0.82rem', fontWeight: 600, color: '#92400e', display: 'block', marginBottom: 6 }}>
+                  Type the correct Malayalam word (leave blank if none):
+                </label>
+                <button onClick={() => setExistsInSentence(null)} style={{ border:'none', background:'transparent', color:'#d97706', cursor:'pointer', fontSize:'0.75rem', textDecoration:'underline' }}>Change choice</button>
+              </div>
+              <ReactTransliterate
+                value={correctedWord}
+                onChangeText={(text) => setCorrectedWord(text)}
+                lang="ml"
+                containerStyle={{ width: '100%' }}
+                containerClassName="react-transliterate-container"
+                renderComponent={(props) => <input {...props} className="form-control ml" style={{ fontSize: '1rem', borderColor: '#fde68a', width: '100%' }} />}
+                placeholder="Type in English... E.g. 'maram' -> 'മരം'"
+              />
+            </div>
+          )}
+          
+          {existsInSentence && correctedWord.trim() !== '' && (
+            <div style={{ marginTop: 6, fontSize: '0.8rem', color: '#166534' }}>
+              ✓ Correction: <strong className="ml">{correctedWord.trim()}</strong>
+            </div>
+          )}
+          {existsInSentence && correctedWord.trim() === '' && (
+            <div style={{ marginTop: 6, fontSize: '0.79rem', color: '#92400e' }}>
+              Leaving blank = no equivalent word
+>>>>>>> 74eda9f (some changes)
             </div>
           )}
           
@@ -420,8 +537,12 @@ export default function AnnotationPage() {
               onAnswer={handleAnswer}
               onHoverChange={setHoveredPairIdx}
               isFocused={focusedPairIdx === pi}
+<<<<<<< HEAD
               targetTokens={sentence.target_tokens}
               language={state.language}
+=======
+              mlTokens={sentence?.target_tokens || []}
+>>>>>>> 74eda9f (some changes)
             />
           ))}
 
