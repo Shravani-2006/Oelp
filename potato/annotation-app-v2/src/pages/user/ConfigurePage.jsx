@@ -10,51 +10,10 @@ export default function ConfigurePage() {
   const [done, setDone]   = useState(false);
   const total = state.uploadedData?.length || 0;
 
-  const activate = () => {
-    actions.setAnnotatorData(state.uploadedData);
-    setDone(true);
+  const activate = async () => {
+    await actions.setAnnotatorData(state.uploadedData);
+    navigate('/user/dashboard');
   };
-
-  if (done) return (
-    <div style={{ minHeight: '100vh', background: '#f1f5f9' }}>
-      <Navbar />
-      <div className="page-container" style={{ maxWidth: 560 }}>
-        <div style={{ textAlign: 'center', padding: '48px 0' }}>
-          <div style={{ fontSize: 72, marginBottom: 16 }}>🎉</div>
-          <h2 style={{ fontWeight: 800, fontSize: '1.55rem', marginBottom: 10 }}>Task Activated!</h2>
-          <p style={{ color: '#475569', marginBottom: 28 }}>
-            <strong>{total} sentences</strong> ready for annotation.
-          </p>
-          <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: 20, marginBottom: 28, textAlign: 'left' }}>
-            <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 8, color: '#1e293b' }}>🔗 Invite Annotators</h3>
-            <p style={{ fontSize: '0.82rem', color: '#64748b', marginBottom: 12 }}>
-              Share this link with your annotators. It will take them directly to the login page for this specific project.
-            </p>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <input 
-                className="form-control" 
-                readOnly 
-                value={`${window.location.origin}/login-annotator?projectId=${state.currentProjectId}`}
-                style={{ fontSize: '0.78rem', background: '#f8fafc' }}
-              />
-              <button 
-                className="btn btn-secondary btn-sm"
-                onClick={() => {
-                  navigator.clipboard.writeText(`${window.location.origin}/login-annotator?projectId=${state.currentProjectId}`);
-                  alert('Link copied to clipboard!');
-                }}
-              >📋 Copy</button>
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-            <button className="btn btn-secondary" onClick={() => navigate('/user/dashboard')}>Back to Home</button>
-            <button className="btn btn-success btn-lg" onClick={() => navigate('/user/dashboard')}>📊 Go to Dashboard →</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <div style={{ minHeight: '100vh', background: '#f1f5f9' }}>

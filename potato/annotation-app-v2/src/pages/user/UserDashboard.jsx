@@ -17,6 +17,45 @@ function downloadJSON(data, name) {
   URL.revokeObjectURL(url);
 }
 
+function SubmissionsDropdown({ p }) {
+  const [selectedSub, setSelectedSub] = useState(0);
+
+  if (!p.annotationResults || p.annotationResults.length === 0) {
+     if (p.annotationResult) {
+        return (
+          <button className="btn btn-sm btn-success" onClick={() => downloadJSON(p.annotationResult, `annotated_${p.id.slice(-8)}.json`)}>
+            ⬇️ Download
+          </button>
+        );
+     }
+     return <span style={{ color: '#94a3b8', fontSize: '0.74rem', fontStyle: 'italic', alignSelf: 'center' }}>{p.status === 'in-progress' ? 'Active' : 'Awaiting'}</span>;
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 160 }}>
+      <select 
+        className="form-control"
+        style={{ fontSize: '0.72rem', padding: '4px', height: 'auto', background: '#f8fafc', borderColor: '#cbd5e1' }}
+        value={selectedSub}
+        onChange={e => setSelectedSub(Number(e.target.value))}
+      >
+        {p.annotationResults.map((sub, idx) => (
+          <option key={idx} value={idx}>{sub.annotatedBy} ({new Date(sub.annotatedAt).toLocaleDateString()})</option>
+        ))}
+      </select>
+      <button 
+        className="btn btn-sm btn-success"
+        onClick={() => {
+           const sub = p.annotationResults[selectedSub];
+           downloadJSON(sub.result, `annotated_${p.name}_${sub.annotatedBy}.json`);
+        }}
+      >
+        ⬇️ Download Selected
+      </button>
+    </div>
+  );
+}
+
 export default function UserDashboard() {
   const { state } = useApp();
   const navigate = useNavigate();
@@ -94,31 +133,9 @@ export default function UserDashboard() {
                         </td>
                         <td style={{ padding: '12px 14px' }}>
                           <div style={{ display: 'flex', gap: 6 }}>
-                            <button 
-                              className="btn btn-sm btn-secondary"
-                              title="Copy Annotator Invite Link"
-                              style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', fontSize: '0.74rem' }}
-                              onClick={() => {
-                                navigator.clipboard.writeText(`${window.location.origin}/login-annotator?projectId=${p.id}`);
-                                alert('Invite link copied!');
-                              }}
-                            ><span>🔗</span> Invite</button>
-                            {p.status === 'completed' && p.annotationResults ? (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                                {p.annotationResults.map((sub, idx) => (
-                                  <button key={idx} className="btn btn-sm btn-success"
-                                    onClick={() => downloadJSON(sub.result, `annotated_${p.name}_${sub.annotatedBy}.json`)}>
-                                    ⬇️ {sub.annotatedBy}
-                                  </button>
-                                ))}
-                              </div>
-                            ) : p.status === 'completed' && p.annotationResult ? (
-                              <button 
-                                className="btn btn-sm btn-success"
-                                onClick={() => downloadJSON(p.annotationResult, `annotated_${p.name}.json`)}
-                              >
-                                ⬇️ Download
-                              </button>
+
+                            {p.status === 'completed' ? (
+                              <SubmissionsDropdown p={p} />
                             ) : (
                               <span style={{ color: '#94a3b8', fontSize: '0.74rem', fontStyle: 'italic', alignSelf: 'center' }}>
                                 {p.status === 'in-progress' ? 'Active' : 'Awaiting'}

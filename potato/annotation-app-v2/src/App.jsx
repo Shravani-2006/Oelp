@@ -50,14 +50,15 @@ function RequireData({ children }) {
 
 // ── Routes ─────────────────────────────────────────────────────────────────────
 function AppRoutes() {
+  const { state } = useApp();
   return (
     <Routes>
 
       {/* ── Login pages ── */}
       <Route path="/login"           element={<LoginPage />} />          {/* kept for backward compat */}
-      <Route path="/login-user"      element={<LoginUserPage />} />
+      <Route path="/login-user"      element={state.isLoggedIn && state.role === 'user' ? <Navigate to="/user/dashboard" replace /> : <LoginUserPage />} />
       <Route path="/login-annotator" element={<LoginAnnotatorPage />} />
-      <Route path="/login-admin"     element={<LoginAdminPage />} />
+      <Route path="/login-admin"     element={state.isLoggedIn && state.role === 'admin' ? <Navigate to="/admin/dashboard" replace /> : <LoginAdminPage />} />
       <Route path="/role-select"     element={<RequireAuth><RoleSelectionPage /></RequireAuth>} />
 
       {/* ── User (Uploader) flow ── */}
@@ -82,8 +83,12 @@ function AppRoutes() {
       <Route path="/admin/dashboard" element={<RequireRole role="admin"><AdminDashboard /></RequireRole>} />
 
       {/* ── Default / 404 ── */}
-      <Route path="/"  element={<Navigate to="/login-user" replace />} />
-      <Route path="*"  element={<Navigate to="/login-user" replace />} />
+      <Route path="/" element={
+        state.isLoggedIn 
+          ? <Navigate to={state.role === 'admin' ? '/admin/dashboard' : state.role === 'annotator' ? '/annotator/instructions' : '/user/dashboard'} replace />
+          : <Navigate to="/login-user" replace />
+      } />
+      <Route path="*"  element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

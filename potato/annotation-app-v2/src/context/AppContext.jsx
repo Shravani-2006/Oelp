@@ -110,27 +110,12 @@ function reducer(state, { type, payload }) {
     case ACTIONS.SET_UPLOADED: return { ...state, uploadedData: payload };
     case ACTIONS.SET_PURPOSE: return { ...state, purpose: payload };
     case ACTIONS.SET_ANNOTATOR_DATA: {
-      // Auto-create a project record when user activates a task
-      const newProj = {
-        id: generateProjectId(),
-        name: `Task ${(state.projects || []).length + 1}`,
-        type: state.projectType || 'word-alignment',
-        language: state.language || 'malayalam',
-        purpose: state.purpose,
-        status: 'uploaded',     // improvement #2: status field
-        createdBy: state.username,
-        createdAt: new Date().toISOString(),
-        sentenceCount: payload?.length ?? 0,
-        dataset: payload,       // Store dataset in project record
-        annotationResult: null,
-      };
       return {
         ...state,
-        annotatorData: payload,
+        annotatorData: payload.data,
         annotations: {},
         sentenceIdx: 0,
-        currentProjectId: newProj.id,   // improvement #3: link projectId
-        projects: [...(state.projects || []), newProj],
+        currentProjectId: payload.projId,
       };
     }
     case ACTIONS.SET_SENTENCE: return { ...state, sentenceIdx: payload };
@@ -160,6 +145,9 @@ function reducer(state, { type, payload }) {
         ),
       };
     }
+    case 'INIT_PROJECTS': {
+      return { ...state, projects: payload };
+    }
     case ACTIONS.LOAD_PROJECT_DATA: {
       const proj = (state.projects || []).find(p => p.id === payload);
       if (!proj) return state;
@@ -187,9 +175,31 @@ export function AppProvider({ children }) {
     return initialState;
   });
 
+  // Keep session sync but DO NOT save robust JSON arrays (like projects or dataset text) to prevent QuotaExceededError breaking login flow
   useEffect(() => {
-    try { localStorage.setItem('wa_app_state', JSON.stringify(state)); } catch {}
-  }, [state]);
+    try { 
+      const minimalState = {
+        isLoggedIn: state.isLoggedIn,
+        username: state.username,
+        role: state.role,
+        purpose: state.purpose,
+        currentProjectId: state.currentProjectId
+      };
+      localStorage.setItem('wa_app_state', JSON.stringify(minimalState)); 
+    } catch {}
+  }, [state.isLoggedIn, state.username, state.role, state.purpose, state.currentProjectId]);
+
+  // Fetch projects from backend on mount
+  useEffect(() => {
+    fetch('/api/projects')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          dispatch({ type: 'INIT_PROJECTS', payload: data });
+        }
+      })
+      .catch(err => console.error('Failed to fetch projects', err));
+  }, []);
 
   const actions = {
     // ── Existing actions (unchanged) ────────────────────────────────────────────
@@ -198,7 +208,32 @@ export function AppProvider({ children }) {
     setRole:         (r)   => dispatch({ type: ACTIONS.SET_ROLE, payload: r }),
     setUploadedData: (d)   => dispatch({ type: ACTIONS.SET_UPLOADED, payload: d }),
     setPurpose:      (p)   => dispatch({ type: ACTIONS.SET_PURPOSE, payload: p }),
-    setAnnotatorData:(d)   => dispatch({ type: ACTIONS.SET_ANNOTATOR_DATA, payload: d }),
+    setAnnotatorData: async (d) => {
+      const newProj = {
+        id: `proj_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        name: `Task ${(state.projects || []).length + 1}`,
+        type: state.projectType || 'word-alignment',
+        language: state.language || 'malayalam',
+        purpose: state.purpose,
+        status: 'uploaded',
+        createdBy: state.username,
+        createdAt: new Date().toISOString(),
+        sentenceCount: d?.length ?? 0,
+        dataset: d,
+        annotationResult: null,
+      };
+      
+      try {
+        await fetch('/api/projects', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newProj)
+        });
+      } catch(e) { console.error('Failed to save project', e); }
+
+      dispatch({ type: ACTIONS.ADD_PROJECT, payload: newProj });
+      dispatch({ type: ACTIONS.SET_ANNOTATOR_DATA, payload: { data: d, projId: newProj.id } });
+    },
     setSentenceIdx:  (i)   => dispatch({ type: ACTIONS.SET_SENTENCE, payload: i }),
     setPairAnswer:   (sIdx, pIdx, answer) =>
       dispatch({ type: ACTIONS.SET_PAIR_ANSWER, payload: { sIdx, pIdx, answer } }),
@@ -210,8 +245,16 @@ export function AppProvider({ children }) {
     setCompletionCode:    (c)   => dispatch({ type: ACTIONS.SET_COMPLETION_CODE,     payload: c }),
     setCurrentProjectId:  (id)  => dispatch({ type: ACTIONS.SET_CURRENT_PROJECT_ID, payload: id }),
     addProject:           (p)   => dispatch({ type: ACTIONS.ADD_PROJECT,             payload: p }),
-    updateProject:        (id, updates) =>
-      dispatch({ type: ACTIONS.UPDATE_PROJECT, payload: { id, updates } }),
+    updateProject: async (id, updates) => {
+      try {
+        await fetch(`/api/projects/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updates)
+        });
+      } catch(e) { console.error('Failed to update project', e); }
+      dispatch({ type: ACTIONS.UPDATE_PROJECT, payload: { id, updates } });
+    },
     loadProjectData:       (id) => dispatch({ type: ACTIONS.LOAD_PROJECT_DATA, payload: id }),
   };
 

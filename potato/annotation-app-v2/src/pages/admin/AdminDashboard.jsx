@@ -33,6 +33,45 @@ function StatCard({ icon, value, label, color }) {
   );
 }
 
+function SubmissionsDropdown({ p }) {
+  const [selectedSub, setSelectedSub] = useState(0);
+
+  if (!p.annotationResults || p.annotationResults.length === 0) {
+     if (p.annotationResult) {
+        return (
+          <button className="btn btn-sm btn-success" onClick={() => downloadJSON(p.annotationResult, `annotated_${p.id.slice(-8)}.json`)}>
+            ⬇️ Download
+          </button>
+        );
+     }
+     return <span style={{ color: '#94a3b8', fontSize: '0.78rem' }}>Pending Annotations</span>;
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 160 }}>
+      <select 
+        className="form-control"
+        style={{ fontSize: '0.72rem', padding: '4px', height: 'auto', background: '#f8fafc', borderColor: '#cbd5e1' }}
+        value={selectedSub}
+        onChange={e => setSelectedSub(Number(e.target.value))}
+      >
+        {p.annotationResults.map((sub, idx) => (
+          <option key={idx} value={idx}>{sub.annotatedBy} ({new Date(sub.annotatedAt).toLocaleDateString()})</option>
+        ))}
+      </select>
+      <button 
+        className="btn btn-sm btn-success"
+        onClick={() => {
+           const sub = p.annotationResults[selectedSub];
+           downloadJSON(sub.result, `annotated_${p.id.slice(-8)}_${sub.annotatedBy}.json`);
+        }}
+      >
+        ⬇️ Download Selected
+      </button>
+    </div>
+  );
+}
+
 function EmptyState({ icon, message }) {
   return (
     <div style={{ padding: '52px 20px', textAlign: 'center', color: '#94a3b8' }}>
@@ -150,7 +189,7 @@ export default function AdminDashboard() {
               : (
                 <div style={{ overflowX: 'auto' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.86rem' }}>
-                    <TableHeader cols={['ID', 'Type', 'Language', 'Sentences', 'Created By', 'Date', 'Status', 'Actions']} />
+                    <TableHeader cols={['ID', 'Type', 'Language', 'Sentences', 'Created By', 'Date', 'Status', 'Invite Link', 'Submissions']} />
                     <tbody>
                       {projects.map((p, i) => {
                         const badge = STATUS_STYLE[p.status] || STATUS_STYLE.uploaded;
@@ -176,22 +215,18 @@ export default function AdminDashboard() {
                               }}>{badge.label}</span>
                             </td>
                             <td style={{ padding: '10px 14px' }}>
-                              {p.annotationResults ? (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                                  {p.annotationResults.map((sub, idx) => (
-                                    <button key={idx} className="btn btn-sm btn-success"
-                                      onClick={() => downloadJSON(sub.result, `annotated_${p.id.slice(-8)}_${sub.annotatedBy}.json`)}>
-                                      ⬇️ {sub.annotatedBy}
-                                    </button>
-                                  ))}
-                                </div>
-                              ) : p.annotationResult ? (
-                                  <button className="btn btn-sm btn-success"
-                                    onClick={() => downloadJSON(p.annotationResult, `annotated_${p.id.slice(-8)}.json`)}>
-                                    ⬇️ Download
-                                  </button>
-                              ) : <span style={{ color: '#94a3b8', fontSize: '0.78rem' }}>Pending</span>
-                              }
+                              <button 
+                                className="btn btn-sm btn-secondary"
+                                title="Copy Annotator Invite Link"
+                                style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', fontSize: '0.72rem' }}
+                                onClick={() => {
+                                  navigator.clipboard.writeText(`${window.location.origin}/login-annotator?projectId=${p.id}`);
+                                  alert('Annotator invite link copied to clipboard!');
+                                }}
+                              ><span>🔗</span> Copy Link</button>
+                            </td>
+                            <td style={{ padding: '10px 14px' }}>
+                              <SubmissionsDropdown p={p} />
                             </td>
                           </tr>
                         );
