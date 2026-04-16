@@ -1,0 +1,163 @@
+{
+  "id": "proj_1776365065800_dpeme",
+  "name": "Task 4",
+  "type": "word-alignment",
+  "language": "marathi",
+  "purpose": "evaluate",
+  "status": "completed",
+  "createdBy": "parvathi",
+  "createdAt": "2026-04-16T18:44:25.800Z",
+  "sentenceCount": 1,
+  "dataset": [
+    {
+      "en_sentence": "I like to read books.",
+      "mr_sentence": "मला पुस्तके वाचायला आवडतात.",
+      "alignment": [
+        {
+          "en_word": "I",
+          "mr_word": "मला"
+        },
+        {
+          "en_word": "like",
+          "mr_word": "आवडतात"
+        },
+        {
+          "en_word": "to",
+          "mr_word": "वाचायला"
+        },
+        {
+          "en_word": "read",
+          "mr_word": "वाचायला"
+        },
+        {
+          "en_word": "books.",
+          "mr_word": "पुस्तके"
+        },
+        {
+          "en_word": "books.",
+          "mr_word": "."
+        }
+      ],
+      "id": 1,
+      "english": "I like to read books.",
+      "target": "मला पुस्तके वाचायला आवडतात.",
+      "english_tokens": [
+        "I",
+        "like",
+        "to",
+        "read",
+        "books."
+      ],
+      "target_tokens": [
+        "मला",
+        "पुस्तके",
+        "वाचायला",
+        "आवडतात."
+      ]
+    }
+  ],
+  "annotationResult": [
+    {
+      "annotatedBy": "paru",
+      "annotatedAt": "2026-04-16T18:47:34.916Z",
+      "result": [
+        {
+          "sentence_id": 1,
+          "english": "I like to read books.",
+          "target": "मला पुस्तके वाचायला आवडतात.",
+          "annotations": [
+            {
+              "alignment_index": 0,
+              "en_word": "I",
+              "answer": "yes",
+              "corrected_word": null
+            },
+            {
+              "alignment_index": 1,
+              "en_word": "like",
+              "answer": "yes",
+              "corrected_word": null
+            },
+            {
+              "alignment_index": 2,
+              "en_word": "to",
+              "answer": "no",
+              "corrected_word": ""
+            },
+            {
+              "alignment_index": 3,
+              "en_word": "read",
+              "answer": "yes",
+              "corrected_word": null
+            },
+            {
+              "alignment_index": 4,
+              "en_word": "books.",
+              "answer": "yes",
+              "corrected_word": null
+            },
+            {
+              "alignment_index": 5,
+              "en_word": "books.",
+              "answer": "no",
+              "corrected_word": ""
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "annotationResults": [
+    {
+      "annotatedBy": "paru",
+      "annotatedAt": "2026-04-16T18:47:34.916Z",
+      "result": [
+        {
+          "sentence_id": 1,
+          "english": "I like to read books.",
+          "target": "मला पुस्तके वाचायला आवडतात.",
+          "annotations": [
+            {
+              "alignment_index": 0,
+              "en_word": "I",
+              "answer": "yes",
+              "corrected_word": null
+            },
+            {
+              "alignment_index": 1,
+              "en_word": "like",
+              "answer": "yes",
+              "corrected_word": null
+            },
+            {
+              "alignment_index": 2,
+              "en_word": "to",
+              "answer": "no",
+              "corrected_word": ""
+            },
+            {
+              "alignment_index": 3,
+              "en_word": "read",
+              "answer": "yes",
+              "corrected_word": null
+            },
+            {
+              "alignment_index": 4,
+              "en_word": "books.",
+              "answer": "yes",
+              "corrected_word": null
+            },
+            {
+              "alignment_index": 5,
+              "en_word": "books.",
+              "answer": "no",
+              "corrected_word": ""
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "annotatedBy": "paru",
+  "annotatedAt": "2026-04-16T18:47:34.916Z"
+}

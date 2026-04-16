@@ -20,7 +20,7 @@ const PROJECT_TYPES = [
     description: 'Named Entity Recognition — identify and label persons, places, organisations and other entities in text.',
     color: '#0891b2',
     bg: '#e0f2fe',
-    available: false,   // Coming soon
+    available: true,
   },
 ];
 

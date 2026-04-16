@@ -40,29 +40,27 @@ body {
 
 /* ── Tokens ─────────────────────────────────────────────────────── */
 .token {
-  display: inline-block;
-  padding: 3px 7px;
-  margin: 2px 2px;
-  border-radius: 6px;
+  display: inline;
+  padding: 2px 4px;
+  border-radius: 4px;
   font-size: 0.92rem;
-  border: 2px solid transparent;
-  transition: background 0.15s, border-color 0.15s, transform 0.1s, box-shadow 0.15s;
+  border: 1px solid transparent;
+  transition: background 0.1s, color 0.1s, opacity 0.15s;
   user-select: none;
   cursor: default;
 }
-.token-en  { background: #f8fafc; color: #334155; }
-.token-ml  { background: #f0fdf4; color: #166534; font-family: 'Noto Sans Malayalam', sans-serif; }
+/* By default we DON'T add background or borders to regular tokens so they flow like normal text */
 
 /* Active hover highlight */
-.token-en.hl-hover  { background: var(--hl-en);  border-color: #ca8a04; transform: scale(1.08); box-shadow: 0 0 0 3px rgba(234,179,8,0.25); font-weight: 700; }
-.token-ml.hl-hover  { background: var(--hl-ml);  border-color: #16a34a; transform: scale(1.08); box-shadow: 0 0 0 3px rgba(74,222,128,0.25); font-weight: 700; }
+.token-en.hl-hover  { background: var(--hl-en);  border-color: #ca8a04; color: #1e293b; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.token-ml.hl-hover  { background: var(--hl-ml);  border-color: #16a34a; color: #166534; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
 /* Dim non-highlighted tokens when something IS hovered */
 .tokens-dimmed .token:not(.hl-hover) { opacity: 0.35; }
 
 /* "answered" light highlight - always visible */
-.token-en.hl-answered { background: var(--hl-en-answered); border-color: #fbbf24; }
-.token-ml.hl-answered { background: var(--hl-ml-answered); border-color: #86efac; }
+.token-en.hl-answered { background: var(--hl-en-answered); border-color: #fde047; }
+.token-ml.hl-answered { background: var(--hl-ml-answered); border-color: #bbf7d0; }
 
 .token-index { font-size: 0.58rem; color: #94a3b8; vertical-align: super; margin-left: 1px; }
 

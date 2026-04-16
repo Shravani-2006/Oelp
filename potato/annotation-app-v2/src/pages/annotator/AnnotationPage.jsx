@@ -66,9 +66,6 @@ function SentencePanel({ sentence, hoveredPairIdx, answers }) {
                   <span
                     className={`token ${isHl ? 'token-en hl-hover' : isAns ? 'token-en hl-answered' : ''}`}
                     title={`index ${i}`}
-                    style={(!isHl && !isAns) ? { 
-                      display: 'inline', padding: 0, margin: 0, background: 'transparent', border: 'none', color: 'inherit' 
-                    } : undefined}
                   >
                     {tok}
                   </span>
@@ -94,9 +91,6 @@ function SentencePanel({ sentence, hoveredPairIdx, answers }) {
                   <span
                     className={`token ml ${isHl ? 'token-ml hl-hover' : isAns ? 'token-ml hl-answered' : ''}`}
                     title={`index ${i}`}
-                    style={(!isHl && !isAns) ? { 
-                      display: 'inline', padding: 0, margin: 0, background: 'transparent', border: 'none', color: 'inherit' 
-                    } : undefined}
                   >
                     {tok}
                   </span>

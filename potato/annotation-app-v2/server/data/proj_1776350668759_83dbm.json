@@ -1,0 +1,60 @@
+{
+  "id": "proj_1776350668759_83dbm",
+  "name": "Task 3",
+  "type": "word-alignment",
+  "language": "marathi",
+  "purpose": "evaluate",
+  "status": "uploaded",
+  "createdBy": "hi",
+  "createdAt": "2026-04-16T14:44:28.759Z",
+  "sentenceCount": 1,
+  "dataset": [
+    {
+      "en_sentence": "I like to read books.",
+      "mr_sentence": "मला पुस्तके वाचायला आवडतात.",
+      "alignment": [
+        {
+          "en_word": "I",
+          "mr_word": "मला"
+        },
+        {
+          "en_word": "like",
+          "mr_word": "आवडतात"
+        },
+        {
+          "en_word": "to",
+          "mr_word": "वाचायला"
+        },
+        {
+          "en_word": "read",
+          "mr_word": "वाचायला"
+        },
+        {
+          "en_word": "books.",
+          "mr_word": "पुस्तके"
+        },
+        {
+          "en_word": "books.",
+          "mr_word": "."
+        }
+      ],
+      "id": 1,
+      "english": "I like to read books.",
+      "target": "मला पुस्तके वाचायला आवडतात.",
+      "english_tokens": [
+        "I",
+        "like",
+        "to",
+        "read",
+        "books."
+      ],
+      "target_tokens": [
+        "मला",
+        "पुस्तके",
+        "वाचायला",
+        "आवडतात."
+      ]
+    }
+  ],
+  "annotationResult": null
+}

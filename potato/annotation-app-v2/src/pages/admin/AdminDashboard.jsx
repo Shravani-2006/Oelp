@@ -108,15 +108,36 @@ export default function AdminDashboard() {
 
   const projects = state.projects || [];
 
-  // Build user list from project creators
+  // Build user list from project creators and annotator submissions
   const userMap = new Map();
   projects.forEach(p => {
-    if (p.createdBy && !userMap.has(p.createdBy)) {
-      userMap.set(p.createdBy, { username: p.createdBy, role: 'user', lastSeen: p.createdAt, projectCount: 0 });
+    // Add creator (User)
+    if (p.createdBy) {
+      if (!userMap.has(p.createdBy)) {
+        userMap.set(p.createdBy, { username: p.createdBy, role: 'user', lastSeen: p.createdAt, projectCount: 0 });
+      }
+      userMap.get(p.createdBy).projectCount++;
+      if (new Date(p.createdAt) > new Date(userMap.get(p.createdBy).lastSeen)) {
+        userMap.get(p.createdBy).lastSeen = p.createdAt;
+      }
     }
-    if (p.createdBy) userMap.get(p.createdBy).projectCount++;
+
+    // Add annotators
+    if (p.annotationResults && Array.isArray(p.annotationResults)) {
+      p.annotationResults.forEach(sub => {
+        if (sub.annotatedBy) {
+          if (!userMap.has(sub.annotatedBy)) {
+            userMap.set(sub.annotatedBy, { username: sub.annotatedBy, role: 'annotator', lastSeen: sub.annotatedAt, projectCount: 0 });
+          }
+          userMap.get(sub.annotatedBy).projectCount++;
+          if (new Date(sub.annotatedAt) > new Date(userMap.get(sub.annotatedBy).lastSeen)) {
+            userMap.get(sub.annotatedBy).lastSeen = sub.annotatedAt;
+          }
+        }
+      });
+    }
   });
-  const users = [...userMap.values()];
+  const users = [...userMap.values()].sort((a, b) => new Date(b.lastSeen) - new Date(a.lastSeen));
 
   const addType = () => {
     const name = newTypeName.trim();
@@ -182,14 +203,27 @@ export default function AdminDashboard() {
           <div className="card">
             <div className="card-header">
               <span>📋</span> All Projects
-              <span className="badge badge-primary" style={{ marginLeft: 'auto' }}>{projects.length} total</span>
+              <span className="badge badge-primary" style={{ marginLeft: 'auto', marginRight: 12 }}>{projects.length} total</span>
+              {projects.length > 0 && (
+                <button 
+                  className="btn btn-sm btn-danger" 
+                  style={{ padding: '4px 10px', fontSize: '0.75rem' }}
+                  onClick={() => {
+                    if (window.confirm(`⚠️ WARNING: Are you incredibly absolutely sure you want to DELETE ALL ${projects.length} PROJECTS permanently? This wipes out the entire database folder! THERE IS NO UNDO.`)) {
+                      actions.deleteAllProjects();
+                    }
+                  }}
+                >
+                  🧨 Delete All
+                </button>
+              )}
             </div>
             {projects.length === 0
               ? <EmptyState icon="📭" message="No projects yet. A User must upload and configure a task first." />
               : (
                 <div style={{ overflowX: 'auto' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.86rem' }}>
-                    <TableHeader cols={['ID', 'Type', 'Language', 'Sentences', 'Created By', 'Date', 'Status', 'Invite Link', 'Submissions']} />
+                    <TableHeader cols={['ID', 'Type', 'Language', 'Sentences', 'Created By', 'Date', 'Status', 'Invite Link', 'Submissions', 'Manage']} />
                     <tbody>
                       {projects.map((p, i) => {
                         const badge = STATUS_STYLE[p.status] || STATUS_STYLE.uploaded;
@@ -215,18 +249,35 @@ export default function AdminDashboard() {
                               }}>{badge.label}</span>
                             </td>
                             <td style={{ padding: '10px 14px' }}>
-                              <button 
-                                className="btn btn-sm btn-secondary"
-                                title="Copy Annotator Invite Link"
-                                style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', fontSize: '0.72rem' }}
-                                onClick={() => {
-                                  navigator.clipboard.writeText(`${window.location.origin}/login-annotator?projectId=${p.id}`);
-                                  alert('Annotator invite link copied to clipboard!');
-                                }}
-                              ><span>🔗</span> Copy Link</button>
+                                <button 
+                                  className="btn btn-sm btn-secondary"
+                                  title="Copy Annotator Invite Link"
+                                  style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', fontSize: '0.72rem' }}
+                                  onClick={() => {
+                                    const link = `${window.location.origin}/login-annotator?projectId=${p.id}`;
+                                    if (navigator.clipboard && window.isSecureContext) {
+                                      navigator.clipboard.writeText(link);
+                                      alert('Annotator invite link copied to clipboard!');
+                                    } else {
+                                      prompt('Your browser blocked automatic copying (Insecure HTTP Context). Please copy the link manually below:', link);
+                                    }
+                                  }}
+                                ><span>🔗</span> Copy Link</button>
                             </td>
                             <td style={{ padding: '10px 14px' }}>
                               <SubmissionsDropdown p={p} />
+                            </td>
+                            <td style={{ padding: '10px 14px' }}>
+                                <button 
+                                  className="btn btn-sm btn-danger"
+                                  title="Permanently Delete Project"
+                                  style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', fontSize: '0.72rem' }}
+                                  onClick={() => {
+                                    if (window.confirm(`Are you absolutely sure you want to permanently delete Project [${p.id.slice(-8)}]?\n\nThis will physically delete the file ${p.id}.json from the backend node server.`)) {
+                                      actions.deleteProject(p.id);
+                                    }
+                                  }}
+                                ><span>🗑️</span> Delete</button>
                             </td>
                           </tr>
                         );

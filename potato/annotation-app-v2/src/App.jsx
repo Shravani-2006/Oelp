@@ -11,6 +11,7 @@ import PurposePage               from './pages/user/PurposePage';
 import ConfigurePage             from './pages/user/ConfigurePage';
 import AnnotatorInstructionsPage from './pages/annotator/AnnotatorInstructionsPage';
 import AnnotationPage            from './pages/annotator/AnnotationPage';
+import NERAnnotationPage         from './pages/annotator/NERAnnotationPage';
 import DonePage                  from './pages/annotator/DonePage';
 
 // New pages
@@ -74,8 +75,16 @@ function AppRoutes() {
       <Route path="/annotator"              element={<Navigate to="/annotator/instructions" replace />} />
       <Route path="/annotator/prolific"     element={<ProlificEntryPage />} />                                          {/* NEW — no auth guard, auto-auth */}
       <Route path="/annotator/instructions" element={<RequireRole role="annotator"><AnnotatorInstructionsPage /></RequireRole>} />
-      <Route path="/annotator/annotate"     element={<RequireRole role="annotator"><AnnotationPage /></RequireRole>} />
-      <Route path="/annotator/task"         element={<RequireRole role="annotator"><AnnotationPage /></RequireRole>} />  {/* alias — improvement #3 */}
+      <Route path="/annotator/annotate"     element={
+        <RequireRole role="annotator">
+           {state.projectType === 'ner' ? <NERAnnotationPage /> : <AnnotationPage />}
+        </RequireRole>
+      } />
+      <Route path="/annotator/task"         element={
+        <RequireRole role="annotator">
+           {state.projectType === 'ner' ? <NERAnnotationPage /> : <AnnotationPage />}
+        </RequireRole>
+      } />
       <Route path="/annotator/done"         element={<RequireRole role="annotator"><DonePage /></RequireRole>} />
 
       {/* ── Admin flow ── */}

@@ -148,6 +148,12 @@ function reducer(state, { type, payload }) {
     case 'INIT_PROJECTS': {
       return { ...state, projects: payload };
     }
+    case 'DELETE_PROJECT': {
+      return { ...state, projects: (state.projects || []).filter(p => p.id !== payload) };
+    }
+    case 'DELETE_ALL_PROJECTS': {
+      return { ...state, projects: [] };
+    }
     case ACTIONS.LOAD_PROJECT_DATA: {
       const proj = (state.projects || []).find(p => p.id === payload);
       if (!proj) return state;
@@ -203,6 +209,18 @@ export function AppProvider({ children }) {
 
   const actions = {
     // ── Existing actions (unchanged) ────────────────────────────────────────────
+    deleteProject:   async (projectId) => {
+      try {
+        await fetch(`/api/projects/${projectId}`, { method: 'DELETE' });
+        dispatch({ type: 'DELETE_PROJECT', payload: projectId });
+      } catch (err) { console.error('Delete project failed', err); }
+    },
+    deleteAllProjects: async () => {
+      try {
+        await fetch('/api/projects', { method: 'DELETE' });
+        dispatch({ type: 'DELETE_ALL_PROJECTS' });
+      } catch (err) { console.error('Delete all projects failed', err); }
+    },
     login:           (u)   => dispatch({ type: ACTIONS.LOGIN, payload: u }),
     logout:          ()    => { localStorage.removeItem('wa_app_state'); dispatch({ type: ACTIONS.LOGOUT }); },
     setRole:         (r)   => dispatch({ type: ACTIONS.SET_ROLE, payload: r }),
